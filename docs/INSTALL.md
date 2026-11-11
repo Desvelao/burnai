@@ -28,7 +28,7 @@ Binary names come from `brand.toml`. With the default branding they are `burnai-
 Pick a profile:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Desvelao/ai-plan-burner/main/install.sh | sh -s -- --profile gui
+curl -fsSL https://raw.githubusercontent.com/Desvelao/burnai/main/install.sh | sh -s -- --profile gui
 ```
 
 Replace `gui` with `tui`, `cli` or `all`. Without `--profile`, the script shows a menu when you run it from a terminal.
@@ -36,7 +36,7 @@ Replace `gui` with `tui`, `cli` or `all`. Without `--profile`, the script shows 
 Piping a script into `sh` runs whatever the server sends. To read it first:
 
 ```sh
-curl -fsSLO https://raw.githubusercontent.com/Desvelao/ai-plan-burner/main/install.sh
+curl -fsSLO https://raw.githubusercontent.com/Desvelao/burnai/main/install.sh
 less install.sh
 sh install.sh --profile gui
 ```
@@ -61,7 +61,7 @@ Make sure `~/.local/bin` is on your `PATH`; the script warns if it is not.
 
 ## Manual install
 
-Use this if you do not want to run the script. Download `<slug>-<version>-linux-x86_64.tar.gz` and its `.sha256` from the [releases page](https://github.com/Desvelao/ai-plan-burner/releases), or build them yourself (see [Build from source](#build-from-source)). Then:
+Use this if you do not want to run the script. Download `<slug>-<version>-linux-x86_64.tar.gz` and its `.sha256` from the [releases page](https://github.com/Desvelao/burnai/releases), or build them yourself (see [Build from source](#build-from-source)). Then:
 
 ```sh
 sha256sum -c burnai-*-linux-x86_64.tar.gz.sha256

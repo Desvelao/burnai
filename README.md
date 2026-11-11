@@ -29,7 +29,7 @@ The egui theme (dark flat cards, outlined status badges, per-account cards with 
 Per-user, no root, Linux x86_64. Pick a profile (the daemon that runs tasks and the tray are always included):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Desvelao/ai-plan-burner/main/install.sh | sh -s -- --profile gui   # or tui, cli, all
+curl -fsSL https://raw.githubusercontent.com/Desvelao/burnai/main/install.sh | sh -s -- --profile gui   # or tui, cli, all
 ```
 
 Profiles, manual steps, upgrade, uninstall and troubleshooting: [`docs/INSTALL.md`](docs/INSTALL.md). To build the binaries yourself, `make dist` (inside Docker) writes them to `dist/` under the names in `brand.toml` (`[bins]`), plus the systemd units, the `.desktop` file, the icon and a `MANIFEST`.

@@ -2,12 +2,12 @@
 # Installer for the release tarball (per-user, no root). Names (slug, binaries) come from the MANIFEST file
 # inside the tarball, so nothing about the product is hardcoded here.
 #
-#   curl -fsSL https://raw.githubusercontent.com/Desvelao/ai-plan-burner/main/install.sh | sh -s -- --profile gui
+#   curl -fsSL https://raw.githubusercontent.com/Desvelao/burnai/main/install.sh | sh -s -- --profile gui
 #
 # See docs/INSTALL.md for the profiles and the manual steps.
 set -eu
 
-REPO="Desvelao/ai-plan-burner"
+REPO="Desvelao/burnai"
 PREFIX="${HOME:-}/.local"
 PROFILE=""
 VERSION=""
