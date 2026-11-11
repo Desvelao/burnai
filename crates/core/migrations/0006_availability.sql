@@ -1,0 +1,2 @@
+ALTER TABLE accounts ADD COLUMN available INTEGER NOT NULL DEFAULT 1;
+ALTER TABLE accounts ADD COLUMN availability_schedule TEXT NOT NULL DEFAULT '';

@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  # Manual dry run: builds, tests and packages, uploads the tarball as a workflow artifact, does not publish.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read brand.toml and check versions
+        run: |
+          get() { sed -n '/^\[app\]/,/^\[/s/^'"$1"'[[:space:]]*=[[:space:]]*"\(.*\)".*/\1/p' brand.toml; }
+          VERSION="$(get version)"
+          SLUG="$(get slug)"
+          if [ -z "$VERSION" ] || [ -z "$SLUG" ]; then
+            echo "::error::could not read slug/version from brand.toml"; exit 1
+          fi
+          CARGO_VERSION="$(sed -n '/^\[workspace\.package\]/,/^\[/s/^version[[:space:]]*=[[:space:]]*"\(.*\)".*/\1/p' Cargo.toml)"
+          if [ "$CARGO_VERSION" != "$VERSION" ]; then
+            echo "::error::Cargo.toml workspace version $CARGO_VERSION does not match brand.toml version $VERSION"; exit 1
+          fi
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VERSION" != "$VERSION" ]; then
+              echo "::error::tag $GITHUB_REF_NAME does not match brand.toml version $VERSION"; exit 1
+            fi
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "SLUG=$SLUG" >> "$GITHUB_ENV"
+
+      - name: Build dev image
+        run: make image
+
+      - name: Checks (fmt, clippy, tests)
+        run: make check
+
+      - name: Brand injection test
+        run: make brand-test
+
+      - name: Build release binaries
+        run: make dist
+
+      - name: Installer test
+        run: make install-test
+
+      - name: Package
+        run: |
+          NAME="${SLUG}-${VERSION}-linux-x86_64"
+          mkdir -p "pkg/$NAME"
+          cp -r dist/. "pkg/$NAME/"
+          cp LICENSE README.md install.sh "pkg/$NAME/"
+          tar -czf "$NAME.tar.gz" -C pkg "$NAME"
+          sha256sum "$NAME.tar.gz" > "$NAME.tar.gz.sha256"
+          echo "ASSET=$NAME.tar.gz" >> "$GITHUB_ENV"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SLUG }}-${{ env.VERSION }}-linux-x86_64
+          path: |
+            ${{ env.ASSET }}
+            ${{ env.ASSET }}.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" install.sh --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" install.sh \
+              --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+          fi

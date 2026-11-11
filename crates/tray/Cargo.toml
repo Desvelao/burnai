@@ -1,0 +1,18 @@
+[package]
+name = "plan-burner-tray"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "tray"
+path = "src/main.rs"
+
+[dependencies]
+plan-burner-core = { path = "../core" }
+ksni = { version = "0.3", features = ["blocking"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+chrono = "0.4"
+
+[dev-dependencies]
+tempfile = "3"

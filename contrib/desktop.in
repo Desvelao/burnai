@@ -1,0 +1,18 @@
+[Desktop Entry]
+Type=Application
+Name=@NAME@
+Comment=@NAME@ @VERSION@
+Exec=@BIN_GUI@
+StartupWMClass=@SLUG@
+Icon=@SLUG@
+Terminal=false
+Categories=Utility;
+Actions=Scheduler;Tray;
+
+[Desktop Action Scheduler]
+Name=Start scheduler
+Exec=@BIN_DAEMON@
+
+[Desktop Action Tray]
+Name=Start tray
+Exec=@BIN_TRAY@

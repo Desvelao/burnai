@@ -1,0 +1,36 @@
+//! Core logic for the app (name from `brand.toml`). UI-free so everything is testable headless.
+pub mod accounts;
+pub mod analytics;
+pub mod approval;
+pub mod audit;
+pub mod availability;
+pub mod brand;
+pub mod claude;
+pub mod claude_usage;
+pub mod control;
+pub mod custom;
+pub mod db;
+pub mod engine;
+pub mod error;
+pub mod forms;
+pub mod icon;
+pub mod import;
+pub mod ipc;
+pub mod launch;
+pub mod models;
+pub mod notify;
+pub mod pick;
+pub mod present;
+pub mod provider;
+pub mod recurrence;
+pub mod runner;
+pub mod safety;
+pub mod scheduler;
+pub mod service;
+pub mod session;
+pub mod settings;
+pub mod tasks;
+pub mod templates;
+pub mod usage;
+
+pub use error::{Error, Result};

@@ -1,0 +1,12 @@
+[Unit]
+Description=@NAME@ scheduler daemon
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/@BIN_DAEMON@
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

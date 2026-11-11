@@ -1,0 +1,30 @@
+# Development image. All build/test/run commands execute inside this image.
+# Pinned to Debian bookworm (glibc 2.36); the host binaries need glibc >= 2.35 (checked with `objdump -T`).
+FROM rust:1.99.1-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        pkg-config build-essential \
+        libxkbcommon-dev libxkbcommon-x11-0 libwayland-dev \
+        libx11-dev libxcursor-dev libxi-dev libxrandr-dev libxcb1-dev \
+        libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+        libgl1-mesa-dev libegl1-mesa-dev mesa-vulkan-drivers libvulkan1 \
+        libfontconfig1-dev ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Non-root user matching the host UID/GID so files created in the bind mount are owned by you.
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g ${GID} dev 2>/dev/null || true \
+    && useradd -m -u ${UID} -g ${GID} -s /bin/bash dev 2>/dev/null || true \
+    && mkdir -p /home/dev/.cargo /home/dev/target /home/dev/.local/share /work \
+    && chown -R ${UID}:${GID} /home/dev /work
+
+USER ${UID}:${GID}
+ENV CARGO_HOME=/home/dev/.cargo \
+    CARGO_TARGET_DIR=/home/dev/target \
+    RUSTUP_HOME=/usr/local/rustup
+# rustup home is root-owned; components are installed at build time as root below.
+USER root
+RUN rustup component add rustfmt clippy
+USER ${UID}:${GID}
+WORKDIR /work

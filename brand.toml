@@ -1,0 +1,21 @@
+# Single source of truth for the product identity. Read at build time by crates/core/build.rs
+# (override the path with the BRAND_FILE env var) and by the Makefile `dist` target.
+# Cargo.toml's [workspace.package] version must equal `version` below (the build fails otherwise),
+# because Cargo itself cannot read this file.
+
+[app]
+# Display name: window titles, TUI title, notifications, tray tooltip, error messages.
+name = "Burnai"
+# Machine id: data directory name, database file name, systemd unit / .desktop file ids.
+slug = "burnai"
+version = "0.1.0"
+# SQLite file name inside the data directory (kept as-is so existing databases keep working).
+db_file = "plan-burner.db"
+
+[bins]
+# Installed binary names (`make dist` renames the generic cargo outputs gui/tui/tray/cli/daemon to these).
+gui = "burnai-gui"
+tui = "burnai-tui"
+tray = "burnai-tray"
+cli = "burnai-cli"
+daemon = "burnai-daemon"

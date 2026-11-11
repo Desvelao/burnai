@@ -1,0 +1,45 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: ai-plan-burner-dev
+    working_dir: /work
+    volumes:
+      - .:/work
+      - cargo-home:/home/dev/.cargo
+      - cargo-target:/home/dev/target
+      - app-data:/home/dev/.local/share
+    environment:
+      - RUST_LOG=info
+    command: bash
+
+  # Run the GUI by forwarding the host display (X11 / XWayland). Opt-in: `make gui`.
+  gui:
+    extends: dev
+    profiles: ["gui"]
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - RUST_LOG=info
+      - WINIT_UNIX_BACKEND=x11
+      - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+    volumes:
+      - .:/work
+      - cargo-home:/home/dev/.cargo
+      - cargo-target:/home/dev/target
+      - app-data:/home/dev/.local/share
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      # Browse… dialogs talk to the host xdg-desktop-portal over the session bus.
+      - ${XDG_RUNTIME_DIR:-/run/user/1000}/bus:/run/user/1000/bus
+      # Automatic Claude usage reads the login token from the credentials file. Opt in by uncommenting
+      # (read-only; the app never writes it). HOME in the container is /home/dev.
+      # - ${HOME}/.claude:/home/dev/.claude:ro
+    command: cargo run -p plan-burner-app
+
+volumes:
+  cargo-home:
+  cargo-target:
+  app-data:

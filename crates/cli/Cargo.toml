@@ -1,0 +1,12 @@
+[package]
+name = "plan-burner-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "cli"
+path = "src/main.rs"
+
+[dependencies]
+plan-burner-core = { path = "../core" }
+serde_json = "1"

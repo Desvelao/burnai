@@ -1,0 +1,14 @@
+[package]
+name = "plan-burner-daemon"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "daemon"
+path = "src/main.rs"
+
+[dependencies]
+plan-burner-core = { path = "../core" }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+libc = "0.2"

@@ -1,0 +1,14 @@
+[Unit]
+Description=@NAME@ tray
+After=graphical-session.target @SLUG@-daemon.service
+PartOf=graphical-session.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+ExecStart=%h/.local/bin/@BIN_TRAY@
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=graphical-session.target

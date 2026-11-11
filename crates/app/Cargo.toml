@@ -1,0 +1,15 @@
+[package]
+name = "plan-burner-app"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "gui"
+path = "src/main.rs"
+
+[dependencies]
+plan-burner-core = { path = "../core" }
+eframe = "0.31"
+chrono = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
